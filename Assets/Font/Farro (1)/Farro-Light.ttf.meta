@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 85af227b3023f3e4c949d2cceb1b7b93
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Farro
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: b345fea700f0b98439e65746047920dc, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
