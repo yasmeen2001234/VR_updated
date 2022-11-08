@@ -106,6 +106,7 @@ public class Whiteboard : MonoBehaviour
     }
 
     //Receives the position of the raycast from the marker to the whiteboard
+    
     public void SetTouchPosition(float x, float y)
     {
         posX = x;
