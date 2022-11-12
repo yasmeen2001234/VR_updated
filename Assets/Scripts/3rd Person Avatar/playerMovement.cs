@@ -7,6 +7,8 @@ using Photon.Pun;
 public class playerMovement : MonoBehaviour
 {
     bool isWalking = false;
+   static public bool trigger = false;
+
 
     public Animator CelebrityAnimator;
 
@@ -17,7 +19,7 @@ public class playerMovement : MonoBehaviour
     PhotonView view;
 
     private GameObject cam;
-
+   
     private Vector3 offset;
     public float sensitivity = 5f;
     private float clampAngle = 5f;
@@ -40,6 +42,7 @@ public class playerMovement : MonoBehaviour
 
             //  Move();
             cam.transform.position = rb.transform.position + offset;
+
 
             if (Input.GetKey(KeyCode.UpArrow))
             {
@@ -66,9 +69,29 @@ public class playerMovement : MonoBehaviour
             {
                 transform.Rotate(0, 60 * Time.deltaTime, 0);
             }
+            /*
+            if (trigger)
+            {
+                cam.transform.position = new Vector3(-29.3f,1.7f,-26f);
+                cam.transform.rotation = new Quaternion(0, 0, 0,0);
+
+
+            }
+            if (trigger ==false)
+            {
+
+            }
+            */
 
         }
        
+    }
+    private void OnTriggerStay(Collider other)
+    {
+        if(other.gameObject.name == "trigger")
+        {
+            trigger = true;
+        }
     }
 
     // Update is called once per frame
@@ -91,8 +114,15 @@ public class playerMovement : MonoBehaviour
                 cam.transform.RotateAround(rb.transform.position, axis, (20 * Time.deltaTime));
 
             }
-            float mouseY = Input.GetAxis("Mouse Y");
-            // cam.transform.Rotate(new Vector3(-mouseY * 0.9f, 0, 0));
+           
+           /*
+                float mouseY = Input.GetAxis("Mouse Y");
+                cam.transform.Rotate(new Vector3(-mouseY * 0.9f, 0, 0));
+                float mouseX = Input.GetAxis("Mouse X");
+                cam.transform.Rotate(new Vector3(0, -mouseX * 0.9f, 0));
+
+           */
+
 
 
 
@@ -101,6 +131,8 @@ public class playerMovement : MonoBehaviour
 
 
     }
+
+  
     private void Move()
     {
 

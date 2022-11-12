@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Bullet
+  - bottle
+  - Full
+  - VRGazeInteractable
+  - smoke
+  - glass
   layers:
   - Default
   - TransparentFX
