@@ -77,7 +77,7 @@ public class Drag : MonoBehaviourPunCallbacks
         */
         if (m_photonView.Owner == PhotonNetwork.LocalPlayer)
         {
-            Debug.Log("We do not request the ownership. Already mine.");
+         //   Debug.Log("We do not request the ownership. Already mine.");
         }
        
     }
@@ -95,7 +95,7 @@ public class Drag : MonoBehaviourPunCallbacks
             return;
         }
 
-        Debug.Log("Ownership Requested for: " + targetView.name + " from " + requestingPlayer.NickName);
+     //   Debug.Log("Ownership Requested for: " + targetView.name + " from " + requestingPlayer.NickName);
         m_photonView.TransferOwnership(requestingPlayer);
     }
 

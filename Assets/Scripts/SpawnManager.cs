@@ -40,7 +40,7 @@ public class SpawnManager : MonoBehaviour
         if (scene.name == "SampleScene")
         {
 
-            //Gallery scene
+            //Outdoor scene
             spawnPositionNONVR = new Vector3(Random.Range(3.3f, 3f), 0.374f, Random.Range(12.24f, 13f));
 
         }
@@ -50,7 +50,7 @@ public class SpawnManager : MonoBehaviour
             if (scene.name == "Rome")
 
             {
-                //Gallery scene
+                //Classroom scene
                 spawnPositionNONVR = new Vector3(Random.Range(-28f, -29f), 0, Random.Range(-17f, -18f));
             }
 

@@ -1740,6 +1740,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6307726801220251802, guid: d109b7de4cb350148b563931b7c36e76, type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6307726801220251804, guid: d109b7de4cb350148b563931b7c36e76, type: 3}
       propertyPath: m_Name
       value: welcome UI
@@ -2262,6 +2266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de9122e52bc7634da459a8ce430b078, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  height: 1
 --- !u!1 &1340579689
 GameObject:
   m_ObjectHideFlags: 0

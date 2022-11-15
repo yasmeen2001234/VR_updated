@@ -10,6 +10,7 @@ TagManager:
   - VRGazeInteractable
   - smoke
   - glass
+  - Canvas
   layers:
   - Default
   - TransparentFX

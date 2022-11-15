@@ -23,8 +23,9 @@ public class playerMovement : MonoBehaviour
     private Vector3 offset;
     public float sensitivity = 5f;
     private float clampAngle = 5f;
-   
 
+    public static bool ActivateButton;
+    public GameObject Camera1;
 
     void Start()
     {
@@ -69,28 +70,45 @@ public class playerMovement : MonoBehaviour
             {
                 transform.Rotate(0, 60 * Time.deltaTime, 0);
             }
-            /*
+
+        
+
+
             if (trigger)
             {
-                cam.transform.position = new Vector3(-29.3f,1.7f,-26f);
-                cam.transform.rotation = new Quaternion(0, 0, 0,0);
-
-
-            }
-            if (trigger ==false)
+              //  print("trigger is true");
+              //  GameObject.FindGameObjectWithTag("MainCamera").SetActive(true);
+                ActivateButton = true;
+            //    Camera1.SetActive(true);
+           
+            } else
             {
-
+                ActivateButton = false;
+                Camera1.SetActive(false);
             }
-            */
 
         }
        
     }
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.name == "trigger")
+        if (view.IsMine)
         {
-            trigger = true;
+            if (other.gameObject.name == "trigger")
+            {
+                trigger = true;
+            }
+            Camera1.SetActive(true);
+
+
+        }
+    
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "trigger")
+        {
+            trigger = false;
         }
     }
 

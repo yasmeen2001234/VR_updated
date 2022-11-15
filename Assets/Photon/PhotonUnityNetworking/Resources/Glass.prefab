@@ -195,7 +195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   liquidRender: {fileID: 8280351580797416569}
-  smoke: {fileID: 0}
+  Smoke1: {fileID: 0}
   liquidMaterial: {fileID: 2100000, guid: 4c392b6a812116440889142e8ad9fca3, type: 2}
   cap: {fileID: 0}
   isOpen: 1
@@ -220,6 +220,7 @@ MonoBehaviour:
   splitSpeed: 2
   maxEdgeDrops: 4
   particlesPrefab: {fileID: 5157395080114985353, guid: e2a7fc594321cc04b861126d1ea6f7bb, type: 3}
+  Smoke: {fileID: 0}
   mixingSpeed: 1
 --- !u!114 &8800559550787013602
 MonoBehaviour:

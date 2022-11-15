@@ -17,7 +17,7 @@ public class BtnAdd : MonoBehaviour
     {
         
     }
-    private void OnMouseDown()
+    public void OnMouseDown()
     {
         bottle.GetComponent<UnitySimpleLiquid.AddLiquid>().enabled = true;
         print("Clicking add");

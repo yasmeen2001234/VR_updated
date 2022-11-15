@@ -23,4 +23,10 @@ public class BtnRemove : MonoBehaviour
         print("Clicking remove");
 
     }
+    public void onClick()
+    {
+        bottle.GetComponent<UnitySimpleLiquid.RemoveLiquid>().enabled = true;
+        print("Clicking remove");
+
+    }
 }

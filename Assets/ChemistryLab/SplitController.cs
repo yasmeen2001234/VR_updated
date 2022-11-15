@@ -25,6 +25,8 @@ namespace UnitySimpleLiquid
 
 		public ParticleSystem particlesPrefab;
 
+		public GameObject Smoke;
+
         #region Particles
         private ParticleSystem particles;
         public ParticleSystem Particles
@@ -137,6 +139,13 @@ namespace UnitySimpleLiquid
 
             if (liquidContainer == null)
                 return;
+
+			if(liquidContainer.FillAmountPercent >= 0.88f)
+			{
+				print("filled");
+               Smoke.SetActive(true);
+
+            }
 
             // Do we have something to split?
             if (liquidContainer.FillAmountPercent <= 0f)

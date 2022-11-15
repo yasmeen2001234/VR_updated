@@ -13,7 +13,7 @@ namespace UnitySimpleLiquid
     {
         public MeshRenderer liquidRender;
         private MeshFilter meshFilter;
-        public ParticleSystem smoke;
+        public GameObject Smoke1;
 
         [SerializeField]
         [Tooltip("Material prefab (will replace material on mesh renderer)")]
@@ -189,10 +189,15 @@ namespace UnitySimpleLiquid
             {
                 SurfaceLevel = CalculateWoldSurfaceLevel();
                 liquidRender.enabled = true;
-               // smoke.GetComponent<ParticleSystem>.enabled = true;
+                // smoke.GetComponent<ParticleSystem>.enabled = true;
+             //   Smoke1.SetActive(false);
             }
             else
+            {
                 liquidRender.enabled = false;
+               // Smoke1.SetActive(true);
+            }
+          
         }
 
         private Vector3 CalculateWoldSurfaceLevel()
@@ -327,9 +332,16 @@ namespace UnitySimpleLiquid
 
             Vector3 gravity;
             if (fillAmountPercent > maxFillAmount && !isOpen)
+            {
                 gravity = Vector3.down;
+               // Smoke1.SetActive(true);
+
+            }
             else
+            {
                 gravity = (Vector3.down + wobble).normalized;
+               // Smoke1.SetActive(true);   
+            }
 
             gravity.y = -1;
 
@@ -373,7 +385,11 @@ namespace UnitySimpleLiquid
 
             if (Application.isPlaying)
                 UpdateWoble();
-            
+
+          
+
+
+
         }
 
         private void OnValidate()

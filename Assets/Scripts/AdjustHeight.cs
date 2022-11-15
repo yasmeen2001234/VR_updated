@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AdjustHeight : MonoBehaviour
 {
+    [SerializeField] float height;
     // Start is called before the first frame update
     void Start()
     {
@@ -16,7 +17,7 @@ public class AdjustHeight : MonoBehaviour
         // To see the player's feet 
         if ( transform.position.y < 1 )
         {
-            transform.position = new Vector3(transform.position.x, 1f, transform.position.z);
+            transform.position = new Vector3(transform.position.x, height,transform.position.z);
         }
     }
 }
