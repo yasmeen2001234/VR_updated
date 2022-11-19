@@ -196,11 +196,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   liquidRender: {fileID: 8280351580797416569}
   Smoke1: {fileID: 0}
+  GlassContanier: {fileID: 0}
   liquidMaterial: {fileID: 2100000, guid: 4c392b6a812116440889142e8ad9fca3, type: 2}
   cap: {fileID: 0}
   isOpen: 1
   inertness: 50
-  liquidColor: {r: 0.551869, g: 0.8679245, b: 0.8247946, a: 1}
+  liquidColor: {r: 0, g: 1, b: 0, a: 1}
   fillAmountPercent: 0.39
   customVolume: 0
 --- !u!114 &9036470550503256654

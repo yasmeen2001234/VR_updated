@@ -28,15 +28,19 @@ public class NetworkedGrabbing : MonoBehaviourPunCallbacks, IPunOwnershipCallbac
         {
             //Object is being grabbbed
             rb.isKinematic = true;
-            gameObject.layer = 11;
+            gameObject.layer = 6;
 
+            //ignore collsion between layer 
+            Physics.IgnoreLayerCollision(7, 8);
+            Physics.IgnoreLayerCollision(8, 7);
         }
         else
         {
             //Object is not being grabbed
             rb.isKinematic = false;
-            gameObject.layer = 9;
-
+            gameObject.layer = 7;
+            Physics.IgnoreLayerCollision(7, 8);
+            Physics.IgnoreLayerCollision(8, 7);
         }
     }
 
@@ -49,6 +53,9 @@ public class NetworkedGrabbing : MonoBehaviourPunCallbacks, IPunOwnershipCallbac
     {
         Debug.Log("Grabbed");
         m_photonView.RPC("StartNetworkGrabbing", RpcTarget.AllBuffered);
+
+        Physics.IgnoreLayerCollision(7, 8);
+        Physics.IgnoreLayerCollision(8, 7);
 
         if (m_photonView.Owner == PhotonNetwork.LocalPlayer)
         {
@@ -64,6 +71,8 @@ public class NetworkedGrabbing : MonoBehaviourPunCallbacks, IPunOwnershipCallbac
 
     public void OnSelectedExited()
     {
+        Physics.IgnoreLayerCollision(7, 8);
+        Physics.IgnoreLayerCollision(8, 7);
         Debug.Log("Released");
         m_photonView.RPC("StopNetworkGrabbing", RpcTarget.AllBuffered);
     }

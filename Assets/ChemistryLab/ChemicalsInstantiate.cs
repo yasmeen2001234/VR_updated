@@ -32,11 +32,13 @@ public class ChemicalsInstantiate : MonoBehaviour
         if (playerMovement.ActivateButton == true)
         {
             Canvas.SetActive(true);
-       
+            MainCamera.SetActive(false);
+
         }
         else
         {
             Canvas.SetActive(false);
+           
             Checkxr();
         }
 
@@ -61,7 +63,7 @@ public class ChemicalsInstantiate : MonoBehaviour
             PhotonNetwork.Instantiate(chemicals.name, position, Quaternion.identity);
             //  Debug.Log(view.Owner.NickName + " Spawned a Non VR Avatar");
          //   SecondCamera.SetActive(true);
-            MainCamera.SetActive(false);
+           
         }
         return;
 

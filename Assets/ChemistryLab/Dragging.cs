@@ -32,7 +32,7 @@ public class Dragging : MonoBehaviour
 
             RaycastHit hitInfo;
             target = GetClickedObject(out hitInfo);
-            if (target.tag =="bottle")
+            if (target.tag =="Bottle1" || target.tag == "Bottle2")
             {
                 _mouseState = true;
                 screenSpace = Camera.main.WorldToScreenPoint(target.transform.position);

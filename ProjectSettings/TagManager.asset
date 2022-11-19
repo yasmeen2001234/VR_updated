@@ -11,6 +11,8 @@ TagManager:
   - smoke
   - glass
   - Canvas
+  - Bottle2
+  - Bottle1
   layers:
   - Default
   - TransparentFX

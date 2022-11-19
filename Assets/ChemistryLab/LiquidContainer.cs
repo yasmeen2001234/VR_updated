@@ -16,6 +16,10 @@ namespace UnitySimpleLiquid
         public GameObject Smoke1;
 
         [SerializeField]
+        
+        GameObject GlassContanier;
+
+        [SerializeField]
         [Tooltip("Material prefab (will replace material on mesh renderer)")]
         private Material liquidMaterial;
 
@@ -31,7 +35,8 @@ namespace UnitySimpleLiquid
         public float inertness = 50;
 
         [SerializeField]
-        private Color liquidColor = Color.green;
+
+        private Color liquidColor;
 
        // [Range(0f, 1f)]
         [SerializeField]
@@ -51,6 +56,7 @@ namespace UnitySimpleLiquid
         private void Start()
         {
             splitController = GetComponent<SplitController>();
+            GameObject GM = GameObject.Find("Glass1");
         }
        
 
@@ -268,8 +274,19 @@ namespace UnitySimpleLiquid
                 // Check if there is valid material instance
                 if (materialInstance == null || liquidRender.sharedMaterial != materialInstance)
                 {
-                    if (liquidMaterial != null)
+                    if (liquidMaterial != null  )
+                    {
+                       // liquidMaterial.color = Color.cyan;
                         materialInstance = new Material(liquidMaterial);
+
+               //         liquidMaterial.color = liquidColor;
+
+                        if (gameObject.tag == "Bottle1")
+                            liquidMaterial.color = Color.red;
+
+                        if (gameObject.tag == "Bottle2")
+                            liquidMaterial.color = Color.green;
+                    }
                     else
                     {
                         var shader = Shader.Find("Liquid/SimpleLiquidShader");
@@ -306,9 +323,32 @@ namespace UnitySimpleLiquid
             }
             set
             {
-                liquidColor = value;
+              //  liquidColor = value;
+
+                if (gameObject.tag == "Bottle1")
+                    liquidColor = Color.green;
+
+                if (gameObject.tag == "Bottle2")
+                    liquidColor= Color.red;
+
+                if (gameObject.tag == "glass" && SplitController.Bottle1 == true  && SplitController.Bottle2 == false)
+                    liquidColor = Color.green;
+                else if (gameObject.tag == "glass" && SplitController.Bottle2 == true && SplitController.Bottle1 == false)
+                    liquidColor = Color.red;
+                else if  (gameObject.tag == "glass" && SplitController.Bottle2 == true && SplitController.Bottle1 == true)
+                        liquidColor = Color.yellow;
+
+
+
+
+
+
+
                 if (MaterialInstance)
+                {
                     MaterialInstance.color = liquidColor;
+
+                }
             }
         }
         #endregion
@@ -397,7 +437,8 @@ namespace UnitySimpleLiquid
             if (liquidRender == null)
                 return;
 
-            LiquidColor = liquidColor;
+          LiquidColor = liquidColor;
+          //  LiquidColor = Color.yellow;
             FillAmountPercent = fillAmountPercent;
             IsOpen = isOpen;
         }

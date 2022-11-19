@@ -16,16 +16,21 @@ namespace UnitySimpleLiquid
         [SerializeField]
         private float bottleneckRadius = 0.1f;
         public float BottleneckRadiusWorld { get; private set; }
-		
+
+        public static bool Bottle1 = false;
+        public static bool Bottle2 = false;
+
+
+
         [Tooltip("How fast liquid split from container")]
         public float splitSpeed = 2f;
-		[Tooltip("Number number of objects the liquid will hit off and continue flowing")]
-		public int maxEdgeDrops = 4;
-		private int currentDrop;
+        [Tooltip("Number number of objects the liquid will hit off and continue flowing")]
+        public int maxEdgeDrops = 4;
+        private int currentDrop;
 
-		public ParticleSystem particlesPrefab;
+        public ParticleSystem particlesPrefab;
 
-		public GameObject Smoke;
+        public GameObject Smoke;
 
         #region Particles
         private ParticleSystem particles;
@@ -86,25 +91,25 @@ namespace UnitySimpleLiquid
             return pos;
         }
 
-		private Vector3 GenerateBottleneckLowesPoint()
-		{
-			if (!liquidContainer)
-				return Vector3.zero;
+        private Vector3 GenerateBottleneckLowesPoint()
+        {
+            if (!liquidContainer)
+                return Vector3.zero;
 
-			// Calculate the direction vector of the bottlenecks slope
+            // Calculate the direction vector of the bottlenecks slope
 
-			Vector3 bottleneckSlope = GetSlopeDirection(Vector3.up, bottleneckPlane.normal);
+            Vector3 bottleneckSlope = GetSlopeDirection(Vector3.up, bottleneckPlane.normal);
 
-			// Find a position along the slope the side of the bottleneck radius
-			Vector3 min = BottleneckPos + bottleneckSlope * BottleneckRadiusWorld;
+            // Find a position along the slope the side of the bottleneck radius
+            Vector3 min = BottleneckPos + bottleneckSlope * BottleneckRadiusWorld;
 
-			return min;
+            return min;
 
-		}
-		#endregion
+        }
+        #endregion
 
-		#region Gizmos
-		private void OnDrawGizmosSelected()
+        #region Gizmos
+        private void OnDrawGizmosSelected()
         {
             // Draws bottleneck direction and radius
             var bottleneckPlane = GenerateBottleneckPlane();
@@ -114,22 +119,22 @@ namespace UnitySimpleLiquid
             GizmosHelper.DrawPlaneGizmos(bottleneckPlane, transform);
 
             // And bottleneck position
-            GizmosHelper.DrawSphereOnPlane(bottleneckPlane, BottleneckRadiusWorld, transform);			
-		}
-		private void OnDrawGizmos()
-		{
-			// Draw a yellow sphere at the transform's position
+            GizmosHelper.DrawSphereOnPlane(bottleneckPlane, BottleneckRadiusWorld, transform);
+        }
+        private void OnDrawGizmos()
+        {
+            // Draw a yellow sphere at the transform's position
             if (raycasthit != Vector3.zero)
             {
                 Gizmos.color = Color.yellow;
                 Gizmos.DrawSphere(raycasthit, 0.01f);
-				Gizmos.DrawSphere(raycastStart, 0.01f);
-			}
-		}
-		#endregion
+                Gizmos.DrawSphere(raycastStart, 0.01f);
+            }
+        }
+        #endregion
 
-		#region Split Logic
-		private const float splashSize = 0.025f;
+        #region Split Logic
+        private const float splashSize = 0.025f;
 
         public bool IsSpliting { get; private set; }
 
@@ -140,11 +145,11 @@ namespace UnitySimpleLiquid
             if (liquidContainer == null)
                 return;
 
-			if(liquidContainer.FillAmountPercent >= 0.88f)
-			{
-				print("filled");
-               Smoke.SetActive(true);
-
+            if (liquidContainer.FillAmountPercent >= 0.8f)
+            {
+                print("filled");
+                Smoke.SetActive(true);
+                liquidContainer.LiquidColor = Color.yellow;
             }
 
             // Do we have something to split?
@@ -192,6 +197,7 @@ namespace UnitySimpleLiquid
 
                     if (inBounding)
                     {
+                      // wrong print("pouring");
                         // Yeah, we are inside liquid container
                         var minPoint = GenerateBottleneckLowesPoint();
                         SplitLogic(minPoint);
@@ -222,182 +228,198 @@ namespace UnitySimpleLiquid
             // Transfer liquid to other container (if possible)
             liquidContainer.FillAmountPercent = newLiquidAmmount;
 
-			RaycastHit containerHit = FindLiquidContainer(splitPos, this.gameObject);
-			
-			//RaycastHit is a struct which gives us everything we need
-			if (containerHit.collider != null)
-			{
-				TransferLiquid(containerHit, liquidStep, flowScale);
+            RaycastHit containerHit = FindLiquidContainer(splitPos, this.gameObject);
 
-			}
-			// Start particles effect
-			StartEffect(splitPos, flowScale);
-		}
+            //RaycastHit is a struct which gives us everything we need
+            if (containerHit.collider != null )
+            {
+
+                print("pouring");
+
+                if (gameObject.tag == "Bottle1")
+                    Bottle1 = true;
 
 
-		//Used for Gizmo only
-		private Vector3 raycasthit;
-		private Vector3 raycastStart;
 
-		private void TransferLiquid(RaycastHit hit, float lostPercentAmount, float scale)
+                if(gameObject.tag == "Bottle2")
+                    Bottle2 = true;
+
+                TransferLiquid(containerHit, liquidStep, flowScale);
+
+            }
+            // Start particles effect
+            StartEffect(splitPos, flowScale);
+        }
+
+
+        //Used for Gizmo only
+        private Vector3 raycasthit;
+        private Vector3 raycastStart;
+
+        private void TransferLiquid(RaycastHit hit, float lostPercentAmount, float scale)
         {
-			var liquid = hit.collider.GetComponent<SplitController>();
-			
-			var otherBottleneck = liquid.GenerateBottleneckPos();
-			var radius = liquid.BottleneckRadiusWorld;
+            var liquid = hit.collider.GetComponent<SplitController>();
 
-			var hitPoint = hit.point;
+            var otherBottleneck = liquid.GenerateBottleneckPos();
+            var radius = liquid.BottleneckRadiusWorld;
 
-			// Does we touched bottleneck?
-			var insideRadius = Vector3.Distance(hitPoint, otherBottleneck) < radius + splashSize * scale;
-			if (insideRadius)
-			{
-				var lostAmount = liquidContainer.Volume * lostPercentAmount;
-				liquid.liquidContainer.FillAmount += lostAmount;
+            var hitPoint = hit.point;
 
-				//color change in capacity
-				SendLiquidContainer(liquid.liquidContainer);
-			}
+            // Does we touched bottleneck?
+            var insideRadius = Vector3.Distance(hitPoint, otherBottleneck) < radius + splashSize * scale;
+            if (insideRadius)
 
-			
-		}
-		
-		private RaycastHit FindLiquidContainer(Vector3 splitPos, GameObject ignoreCollision)
-		{
-			
-			var ray = new Ray(splitPos, Vector3.down);
+            {
 
-			// Check all colliders under ours
-			var hits = Physics.SphereCastAll(ray, splashSize);
-			hits = hits.OrderBy((h) => h.distance).ToArray();
+               // print("pouring");
+                var lostAmount = liquidContainer.Volume * lostPercentAmount;
+                liquid.liquidContainer.FillAmount += lostAmount;
 
-			foreach (var hit in hits)
-			{
-				//Ignore ourself
-				if (!GameObject.ReferenceEquals(hit.collider.gameObject, ignoreCollision) && !hit.collider.isTrigger)
-				{
-					
-					// does it even a split controller
-					var liquid = hit.collider.GetComponent<SplitController>();
-					if (liquid && liquid != this)
-					{
+                //color change in capacity
+                SendLiquidContainer(liquid.liquidContainer);
+            }
 
 
-						return hit;
-					}
+        }
+
+        private RaycastHit FindLiquidContainer(Vector3 splitPos, GameObject ignoreCollision)
+        {
+
+            var ray = new Ray(splitPos, Vector3.down);
+
+            // Check all colliders under ours
+            var hits = Physics.SphereCastAll(ray, splashSize);
+            hits = hits.OrderBy((h) => h.distance).ToArray();
+
+            foreach (var hit in hits)
+            {
+                //Ignore ourself
+                if (!GameObject.ReferenceEquals(hit.collider.gameObject, ignoreCollision) && !hit.collider.isTrigger)
+                {
+
+                    // does it even a split controller
+                    var liquid = hit.collider.GetComponent<SplitController>();
+                    if (liquid && liquid != this)
+                    {
 
 
-					//Something other than a liquid splitter is in the way
-					if (!liquid)
-					{
-						//If we have already dropped down off too many objects, break
-						
-						if (currentDrop >= maxEdgeDrops)
-						{
-							//if we have rolled down too many objects, return empty hit
-							//This assumes at this point the liquid has "dried up" rather than pouring from the last valid point
-							return new RaycastHit();
-						}
-						//Simulate the liquid running off an object it hits and continuing down from the edge of the liquid
-						//Does not take velocity into account
+                        return hit;
+                    }
 
-						//First get the slope direction
-						Vector3 slope = GetSlopeDirection(Vector3.up, hit.normal);
 
-						//Next we try to find the edge of the object the liquid would roll off
-						//This really only works for primitive objects, it would look weird on other stuff
-						Vector3 edgePosition = TryGetSlopeEdge(slope, hit);
-						if (edgePosition != Vector3.zero)
-						{
-							//edge position found, surface must be tilted
-							//Now we can try to transfer the liquid from this position
-							currentDrop++;
-							return FindLiquidContainer(edgePosition, hit.collider.gameObject);
+                    //Something other than a liquid splitter is in the way
+                    if (!liquid)
+                    {
+                        //If we have already dropped down off too many objects, break
 
-						}
-						return new RaycastHit();
-					}
-				}
-			}
-			return new RaycastHit();
-		}
+                        if (currentDrop >= maxEdgeDrops)
+                        {
+                            //if we have rolled down too many objects, return empty hit
+                            //This assumes at this point the liquid has "dried up" rather than pouring from the last valid point
+                            return new RaycastHit();
+                        }
+                        //Simulate the liquid running off an object it hits and continuing down from the edge of the liquid
+                        //Does not take velocity into account
 
-		#endregion
+                        //First get the slope direction
+                        Vector3 slope = GetSlopeDirection(Vector3.up, hit.normal);
 
-		#region ChangeColor
-		//playerMultiply for faster color change
-		[Range(0, 2)]
-		[Tooltip("Mixing speed ratio of different colors")]
-		public float mixingSpeed = 1;
+                       // wrong print("pouring");
 
-		private void SendLiquidContainer(LiquidContainer lc)
-		{
-			//find the color and split speed
-			Color newColor = liquidContainer.LiquidColor;
-			float ss = liquidContainer.GetSplitController.splitSpeed;
+                        //Next we try to find the edge of the object the liquid would roll off
+                        //This really only works for primitive objects, it would look weird on other stuff
+                        Vector3 edgePosition = TryGetSlopeEdge(slope, hit);
+                        if (edgePosition != Vector3.zero)
+                        {
+                            //edge position found, surface must be tilted
+                            //Now we can try to transfer the liquid from this position
+                            currentDrop++;
+                            return FindLiquidContainer(edgePosition, hit.collider.gameObject);
 
-			//we find the coefficient of the volume of the tank and the volume of the incoming fluid
-			float volume = lc.Volume;
-			float koof = ss / (volume * 1000);
-			lc.LiquidColor = Color.Lerp(lc.LiquidColor, newColor, koof * mixingSpeed);
-		}
-		#endregion
+                        }
+                        return new RaycastHit();
+                    }
+                }
+            }
+            return new RaycastHit();
+        }
 
-		#region Slope Logic
-		private float GetIdealRayCastDist(Bounds boundBox, Vector3 point, Vector3 slope)
-		{
-			Vector3 final = boundBox.min;
+        #endregion
 
-			// X axis	
-			if (slope.x > 0)
-				final.x = boundBox.max.x;
-			// Y axis	
-			if (slope.y > 0)
-				final.y = boundBox.max.y;
-			// Z axis
-			if (slope.z > 0)
-				final.z = boundBox.max.z;
+        #region ChangeColor
+        //playerMultiply for faster color change
+        [Range(0, 2)]
+        [Tooltip("Mixing speed ratio of different colors")]
+        public float mixingSpeed = 1;
 
-			return Vector3.Distance(point, final);
-		}
+        private void SendLiquidContainer(LiquidContainer lc)
+        {
+            //find the color and split speed
+            Color newColor = liquidContainer.LiquidColor;
+            float ss = liquidContainer.GetSplitController.splitSpeed;
 
-		private Vector3 GetSlopeDirection(Vector3 up, Vector3 normal)
-		{
-			//https://forum.unity.com/threads/making-a-player-slide-down-a-slope.469988/#post-3062204			
-			return Vector3.Cross(Vector3.Cross(up, normal), normal).normalized;
-		}
+            //we find the coefficient of the volume of the tank and the volume of the incoming fluid
+            float volume = lc.Volume;
+            float koof = ss / (volume * 1000);
+            lc.LiquidColor = Color.Lerp(lc.LiquidColor, newColor, koof * mixingSpeed);
+        }
+        #endregion
 
-		private Vector3 TryGetSlopeEdge(Vector3 slope, RaycastHit hit)
-		{
-			Vector3 edgePosition = Vector3.zero;
+        #region Slope Logic
+        private float GetIdealRayCastDist(Bounds boundBox, Vector3 point, Vector3 slope)
+        {
+            Vector3 final = boundBox.min;
 
-			// We need to pick a position outside of the object to raycast back towards it to find an edge.
-			// We need a position slightly down so it will hit the edge of the object
-			Vector3 moveDown = new Vector3(0f, -0.0001f, 0f);
-			// We also need to move the position outside of the objects bounding box, so we actually hit it
-			float dist = GetIdealRayCastDist(hit.collider.bounds, hit.point, slope);
+            // X axis	
+            if (slope.x > 0)
+                final.x = boundBox.max.x;
+            // Y axis	
+            if (slope.y > 0)
+                final.y = boundBox.max.y;
+            // Z axis
+            if (slope.z > 0)
+                final.z = boundBox.max.z;
 
-			Vector3 reverseRayPos = hit.point + moveDown + (slope * dist);
-			raycastStart = reverseRayPos;
-			Ray backwardsRay = new Ray(reverseRayPos, -slope);
-			RaycastHit[] revHits = Physics.RaycastAll(backwardsRay);
+            return Vector3.Distance(point, final);
+        }
 
-			foreach (var revHit in revHits)
-			{
-				// https://answers.unity.com/questions/752382/how-to-compare-if-two-gameobjects-are-the-same-1.html
-				//We only want to get this position on the original object we hit off of
-				if (GameObject.ReferenceEquals(revHit.collider.gameObject, hit.collider.gameObject))
-				{
-					//We hit the object the liquid is running down!
-					raycasthit = edgePosition = revHit.point;
-					break;
-				}
-			}
-			return edgePosition;
-		}
-		#endregion
+        private Vector3 GetSlopeDirection(Vector3 up, Vector3 normal)
+        {
+            //https://forum.unity.com/threads/making-a-player-slide-down-a-slope.469988/#post-3062204			
+            return Vector3.Cross(Vector3.Cross(up, normal), normal).normalized;
+        }
 
-		private void Update()
+        private Vector3 TryGetSlopeEdge(Vector3 slope, RaycastHit hit)
+        {
+            Vector3 edgePosition = Vector3.zero;
+
+            // We need to pick a position outside of the object to raycast back towards it to find an edge.
+            // We need a position slightly down so it will hit the edge of the object
+            Vector3 moveDown = new Vector3(0f, -0.0001f, 0f);
+            // We also need to move the position outside of the objects bounding box, so we actually hit it
+            float dist = GetIdealRayCastDist(hit.collider.bounds, hit.point, slope);
+
+            Vector3 reverseRayPos = hit.point + moveDown + (slope * dist);
+            raycastStart = reverseRayPos;
+            Ray backwardsRay = new Ray(reverseRayPos, -slope);
+            RaycastHit[] revHits = Physics.RaycastAll(backwardsRay);
+
+            foreach (var revHit in revHits)
+            {
+                // https://answers.unity.com/questions/752382/how-to-compare-if-two-gameobjects-are-the-same-1.html
+                //We only want to get this position on the original object we hit off of
+                if (GameObject.ReferenceEquals(revHit.collider.gameObject, hit.collider.gameObject))
+                {
+                    //We hit the object the liquid is running down!
+                    raycasthit = edgePosition = revHit.point;
+                    break;
+                }
+            }
+            return edgePosition;
+        }
+        #endregion
+
+        private void Update()
         {
             // Update bottleneck and surface from last update
             bottleneckPlane = GenerateBottleneckPlane();
@@ -405,8 +427,8 @@ namespace UnitySimpleLiquid
             surfacePlane = liquidContainer.GenerateSurfacePlane();
             BottleneckRadiusWorld = bottleneckRadius * transform.lossyScale.magnitude;
 
-			// Now check spliting, starting from the top
-			currentDrop = 0;
+            // Now check spliting, starting from the top
+            currentDrop = 0;
             CheckSpliting();
         }
     }
