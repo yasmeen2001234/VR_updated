@@ -47,6 +47,9 @@ MonoBehaviour:
   - Send
   - SetKinematic
   - DestroyObject
+  - <Update>g__SetThisInactive|4_0
+  - SetThisInactive
+  - SetThisActive
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1
